@@ -1,10 +1,6 @@
-
 folium
 streamlit-folium
-
-
 # requirements.txt
-
 streamlit
 pandas
 plotly
