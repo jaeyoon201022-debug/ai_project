@@ -16,7 +16,13 @@ def load_data():
     df = pd.read_csv("seoul.csv", encoding="cp949")
 
     # 날짜 변환
-    df["날짜"] = pd.to_datetime(df["날짜"])
+    df["날짜"] = pd.to_datetime(
+        df["날짜"],
+        errors="coerce"
+    )
+
+    # 날짜 오류 제거
+    df = df.dropna(subset=["날짜"])
 
     # 연도, 월, 일 컬럼 생성
     df["연도"] = df["날짜"].dt.year
@@ -44,6 +50,9 @@ filtered_df = df[
     (df["월"] == month) &
     (df["일"] == day)
 ]
+
+# 연도 기준 정렬
+filtered_df = filtered_df.sort_values("연도")
 
 # 그래프 생성
 fig = go.Figure()
@@ -83,8 +92,9 @@ fig.update_layout(
 # 그래프 출력
 st.plotly_chart(fig, use_container_width=True)
 
-# 선택한 날짜 출력
+# 데이터 표 출력
 st.subheader(f"{month}월 {day}일 기온 데이터")
+
 st.dataframe(
     filtered_df[
         ["연도", "최고기온(℃)", "최저기온(℃)"]
