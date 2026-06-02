@@ -145,12 +145,3 @@ st.write(f"📍 지역 : {info['지역']}")
 st.write(f"🏠 주소 : {info['주소']}")
 
 st.success("혼자 방문하기 좋은 맛집으로 추천됩니다!")
-st.markdown(f"## 🍜 {info['음식점명']}")
-
-st.write(f"📍 주소 : {info['주소']}")
-st.write(f"🍽️ 대표 메뉴 : {info['대표메뉴']}")
-st.write(f"💰 가격대 : {info['가격대']}")
-st.write(f"👤 혼밥 추천 이유 : {info['혼밥추천이유']}")
-st.write(f"🎈 주변 놀거리 : {info['주변놀거리']}")
-
-st.info(info['설명'])
