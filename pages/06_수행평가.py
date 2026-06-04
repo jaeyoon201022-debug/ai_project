@@ -147,140 +147,50 @@ st.write(f"🏠 주소 : {info['주소']}")
 st.success("혼자 방문하기 좋은 맛집으로 추천됩니다!")
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 
-# 페이지 설정
 st.set_page_config(
     page_title="혼자 가기 좋은 서울 맛집",
     page_icon="🍜",
     layout="wide"
 )
 
-st.title("🍜 혼자 가기 좋은 서울 맛집 추천 서비스")
+st.title("🍜 혼자 가기 좋은 서울 맛집 추천")
 
 # CSV 불러오기
 df = pd.read_csv("food.csv")
 
-# -----------------------
-# 지역별 맛집 수 그래프
-# -----------------------
-
-st.subheader("📊 지역별 맛집 개수")
-
-area_count = (
-    df["지역"]
-    .value_counts()
-    .reset_index()
-)
-
-area_count.columns = ["지역", "맛집 수"]
-
-fig = px.bar(
-    area_count,
-    x="지역",
-    y="맛집 수",
-    text="맛집 수",
-    title="지역별 혼밥 맛집 개수",
-    hover_data=["맛집 수"]
-)
-
-fig.update_layout(
-    title_x=0.5,
-    height=500
-)
-
-st.plotly_chart(
-    fig,
-    use_container_width=True
-)
-
-# -----------------------
 # 지역 선택
-# -----------------------
-
-st.subheader("📍 지역 선택")
-
 selected_area = st.selectbox(
-    "지역을 선택하세요",
-    ["전체"] + sorted(df["지역"].unique())
+    "📍 지역 선택",
+    sorted(df["지역"].unique())
 )
 
-if selected_area == "전체":
-    filtered_df = df
-else:
-    filtered_df = df[df["지역"] == selected_area]
+# 선택 지역만 필터
+filtered_df = df[df["지역"] == selected_area]
 
-# -----------------------
-# 지역별 맛집 그래프
-# -----------------------
-
-st.subheader("🍽️ 맛집 목록")
-
-fig2 = px.bar(
-    filtered_df,
-    x="음식점명",
-    title=f"{selected_area} 맛집 목록",
-    hover_data=[
-        "대표메뉴",
-        "가격대",
-        "혼밥추천이유"
-    ]
-)
-
-fig2.update_layout(
-    xaxis_title="음식점",
-    yaxis_visible=False,
-    title_x=0.5,
-    height=600
-)
-
-st.plotly_chart(
-    fig2,
-    use_container_width=True
-)
-
-# -----------------------
 # 맛집 선택
-# -----------------------
-
 restaurant = st.selectbox(
-    "🍜 맛집 선택",
-    filtered_df["음식점명"].tolist()
+    "🍽️ 맛집 선택",
+    filtered_df["음식점명"]
 )
 
+# 선택한 맛집 정보
 info = filtered_df[
     filtered_df["음식점명"] == restaurant
 ].iloc[0]
 
-# -----------------------
-# 상세 정보
-# -----------------------
-
 st.markdown("---")
-st.subheader("📋 맛집 상세 정보")
 
-col1, col2 = st.columns(2)
+st.header(f"🍜 {info['음식점명']}")
 
-with col1:
-    st.write(f"**🍽️ 음식점명** : {info['음식점명']}")
-    st.write(f"**📍 지역** : {info['지역']}")
-    st.write(f"**🏠 주소** : {info['주소']}")
-    st.write(f"**🍜 대표 메뉴** : {info['대표메뉴']}")
+st.write(f"📍 주소 : {info['주소']}")
 
-with col2:
-    st.write(f"**💰 가격대** : {info['가격대']}")
-    st.write(f"**👤 혼밥 추천 이유** : {info['혼밥추천이유']}")
-    st.write(f"**🎈 주변 놀거리** : {info['주변놀거리']}")
+st.write(f"🍽️ 대표 메뉴 : {info['대표메뉴']}")
+
+st.write(f"💰 가격대 : {info['가격대']}")
+
+st.write(f"👤 혼밥 추천 이유 : {info['혼밥추천이유']}")
+
+st.write(f"🎈 주변 놀거리 : {info['주변놀거리']}")
 
 st.info(info["설명"])
-
-# -----------------------
-# 데이터 테이블
-# -----------------------
-
-st.subheader("📄 전체 데이터")
-
-st.dataframe(
-    filtered_df,
-    use_container_width=True
-)
